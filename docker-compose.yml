@@ -1,0 +1,28 @@
+version: "3.1"
+services:
+    postgres:
+      image: postgres:9.5-alpine
+      container_name: horas-postgres
+      volumes:
+         - "./postgres:/var/lib/postgresql/data"
+      environment:
+        - POSTGRES_USER=horas
+        - POSTGRES_PASSWORD=password
+        - POSTGRES_DB=horas
+      ports:
+       - "5432:5432"
+    webserver:
+      image: nginx:alpine
+      container_name: horas-webserver
+      working_dir: /application
+      volumes:
+          - ${PROJECT_PATH}:/application
+          - ./nginx:/etc/nginx/conf.d
+      ports:
+       - "80:80"
+    php-fpm:
+      build: php-fpm
+      container_name: horas-fpm
+      working_dir: /application
+      volumes:
+        - ${PROJECT_PATH}:/application
